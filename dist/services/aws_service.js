@@ -18,27 +18,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const bodyParser = __importStar(require("body-parser"));
-const car_routes_1 = require("./routes/car_routes");
-class App {
+exports.AWSService = void 0;
+const AWS = __importStar(require("aws-sdk"));
+class AWSService {
     constructor() {
-        this.car_routes = new car_routes_1.CarRoutes();
-        this.app = express_1.default();
-        this.config();
-        this.car_routes.route(this.app);
-        // this.awsSetup();
+        this.dynamoDB = new AWS.DynamoDB();
     }
-    config() {
-        //support application/x-www-form-urlencoded post data
-        this.app.use(bodyParser.urlencoded({ extended: true }));
-        // support application/json type post data
-        this.app.use(bodyParser.json());
+    setup() {
+        AWS.config.update({
+            region: "us-east-1",
+        });
+        AWS.config.dynamodb = { endpoint: "http://localhost:8000" };
+    }
+    createDinamoDB() { }
+    getDB() {
+        return this.dynamoDB;
     }
 }
-exports.default = new App().app;
-//# sourceMappingURL=app.js.map
+exports.AWSService = AWSService;
+//# sourceMappingURL=aws_service.js.map

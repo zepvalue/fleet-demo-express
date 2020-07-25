@@ -11,13 +11,20 @@ class App {
     this.app = express();
     this.config();
     this.car_routes.route(this.app);
+    // this.awsSetup();
   }
 
   private config(): void {
+    //support application/x-www-form-urlencoded post data
+    this.app.use(bodyParser.urlencoded({ extended: true }));
     // support application/json type post data
     this.app.use(bodyParser.json());
-    //support application/x-www-form-urlencoded post data
-    this.app.use(bodyParser.urlencoded({ extended: false }));
   }
+
+  //   private awsSetup(): void {
+  //     AWS.config.update({
+  //       region: "us-east-1",
+  //     });
+  //   }
 }
 export default new App().app;

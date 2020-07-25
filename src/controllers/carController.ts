@@ -1,4 +1,4 @@
-export class userController {
+export class carController {
   public create_car(req: Request, res: Response) {
     console.log("create car");
   }
