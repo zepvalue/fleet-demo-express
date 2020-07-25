@@ -31,7 +31,24 @@ class CarRoutes {
     }
     route(app) {
         app.get("/api/cars", (req, res) => {
-            res.status(200).json({ message: "Get request successfull" });
+            const dbParams = { TableName: "CarFleet" };
+            this.docClient.scan(dbParams, (err, data) => {
+                if (err) {
+                    res.status(500).json({
+                        success: false,
+                        message: "Error: Server error",
+                    });
+                }
+                else {
+                    console.log(" D A T A ", data);
+                    // const { Items } = data;
+                    // res.send({
+                    //   success: true,
+                    //   message: "Loaded fruits",
+                    //   cars: Items,
+                    // });
+                }
+            });
         });
         app.post("/api/cars", (req, res) => {
             let dbParams = {

@@ -11,7 +11,21 @@ export class CarRoutes {
 
   public route(app: Application) {
     app.get("/api/cars", (req: Request, res: Response) => {
-      res.status(200).json({ message: "Get request successfull" });
+      const dbParams = { TableName: "CarFleet" };
+      this.docClient.scan(dbParams, (err, cars) => {
+        if (err) {
+          res.status(500).json({
+            success: false,
+            message: "Error: Server error",
+          });
+        } else {
+          res.send({
+            success: true,
+            message: "Loaded fruits",
+            cars: cars,
+          });
+        }
+      });
     });
 
     app.post("/api/cars", (req: Request, res: Response) => {
