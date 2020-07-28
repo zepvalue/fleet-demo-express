@@ -12,7 +12,7 @@ export class CarRoutes {
   public route(app: Application) {
     app.get("/api/cars", (req: Request, res: Response) => {
       const dbParams = { TableName: "CarFleet" };
-      this.docClient.scan(dbParams, (err, cars) => {
+      this.docClient.scan(dbParams, (err, data) => {
         if (err) {
           res.status(500).json({
             success: false,
@@ -21,8 +21,8 @@ export class CarRoutes {
         } else {
           res.send({
             success: true,
-            message: "Loaded fruits",
-            cars: cars,
+            message: "Loaded cars",
+            cars: data,
           });
         }
       });
@@ -63,14 +63,15 @@ export class CarRoutes {
       });
     });
 
-    app.get("/api/car", (req: Request, res: Response) => {
+    app.get("/api/car/:id", (req: Request, res: Response) => {
+      const id = req.params.id;
       console.log("request received, fetching car");
       let car = {};
       let dbParams: AWS.DynamoDB.GetItemInput = {
         TableName: "CarFleet",
         Key: {
           id: {
-            N: "12345678",
+            N: id,
           },
         },
       };
@@ -82,6 +83,29 @@ export class CarRoutes {
           car = data;
           console.log("car data => ", data);
           res.json(data);
+        }
+      });
+    });
+
+    app.delete("/api/car/:id", (req: Request, res: Response) => {
+      const id = req.params.id;
+      console.log("request received, deleting car...");
+      let dbParams: AWS.DynamoDB.GetItemInput = {
+        TableName: "CarFleet",
+        Key: {
+          id: {
+            N: id,
+          },
+        },
+      };
+      this.docClient.delete(dbParams, function (err, data) {
+        if (err) {
+          console.error(
+            "Unable to delete item. Error JSON:",
+            JSON.stringify(err, null, 2)
+          );
+        } else {
+          console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
         }
       });
     });
